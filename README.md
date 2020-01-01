@@ -49,8 +49,8 @@ Unfinished sessions will have a `null` value in the `end` field.
 
 #### TODO:
 
-- [ ] Add functions to estimate the time spent working in a project.
-- [ ] Add an argument to request a "report" of the time spent working in a project.
+- [ ] Add more functions to estimate the time spent working in a project (total, mean per day).
+- [x] Add an argument to request a "report" of the time spent working in a project.
 - [ ] Define behavior for unfinished sessions.
 - [ ] Add more documentation.
 - [ ] Add a simple GUI (optional).
