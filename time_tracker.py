@@ -45,19 +45,19 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("project", help="project name")
     parser.add_argument("-p", "--path", help="Path to the JSON data file", default="data.json")
-    parser.add_argument("-s", "--summary", help="Calculate and display summary of projects in data file", type=bool, default=False)
+    parser.add_argument("-r", "--report", help="Calculate and display a report of the time spent in the project", type=bool, default=False)
     args = parser.parse_args()
     project = args.project
     path = args.path
-    summary = args.summary
+    report = args.report
     if project and path:
         if os.path.exists(path):
             data = load(path)
             if not data:
                 data = create_project(project)
 
-            if summary:
-                get_summary(data, project)
+            if report:
+                get_report(data, project)
             else:
                 p = get_project(project, data)
                 if p:
@@ -86,13 +86,12 @@ def sum_deltas(deltas):
     initial = timedelta(days=0, hours=0, minutes=0, seconds=0)
     return reduce(lambda d1, d2: d1+d2, deltas, initial)
 
-def get_summary(data, project_name):
+def get_report(data, project_name):
     total = calculate_total(data, project_name)
-    #import ipdb; ipdb.set_trace()
-    print(f"Time spent working on project: '{project_name}'")
     hours = total.seconds // 3600
     minutes = total.seconds // 60
     seconds = total.seconds % 60
+    print(f"Time spent working on project: '{project_name}'")
     print(f"{total.days} days, {hours} hs, {minutes} min, {seconds} secs.")
 
 def calculate_total(data, project_name):
