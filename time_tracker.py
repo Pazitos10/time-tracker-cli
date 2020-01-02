@@ -45,7 +45,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("project", help="project name")
     parser.add_argument("-p", "--path", help="Path to the JSON data file", default="data.json")
-    parser.add_argument("-r", "--report", help="Calculate and display a report of the time spent in the project", type=bool, default=False)
+    parser.add_argument("-r", "--report", help="Calculate and display a report of the time spent in the project", action="store_true")
     args = parser.parse_args()
     project = args.project
     path = args.path
@@ -88,11 +88,10 @@ def sum_deltas(deltas):
 
 def get_report(data, project_name):
     total = calculate_total(data, project_name)
-    hours = total.seconds // 3600
-    minutes = total.seconds // 60
-    seconds = total.seconds % 60
     print(f"Time spent working on project: '{project_name}'")
-    print(f"{total.days} days, {hours} hs, {minutes} min, {seconds} secs.")
+    print(f"{total['completed_sessions']}")
+    print(f"Ongoing sessions: {total['ongoing_sessions']}")
+    print(f"Time spent in ongoing session: {total['ongoing_delta']}")
 
 def calculate_total(data, project_name):
     projects = data.get("projects")
@@ -100,12 +99,23 @@ def calculate_total(data, project_name):
         if p.get("project_name") == project_name:
             proj = data.get("projects")[i]
             deltas = []
+            ongoing = False
+            ongoing_delta = 0
             for s in proj.get("sessions"):
-                start = format_date(s.get("start"))
-                end = format_date(s.get("end"))
-                delta = end - start
-                deltas.append(delta)
-            return sum_deltas(deltas)
+                if s.get("end") is not None:
+                    start = format_date(s.get("start"))
+                    end = format_date(s.get("end"))
+                    delta = end - start
+                    deltas.append(delta)
+                else:
+                    ongoing = True
+                    time_ongoing = datetime.now()
+                    ongoing_delta = time_ongoing - format_date(s.get("start"))
+            return {
+                'completed_sessions': sum_deltas(deltas), 
+                'ongoing_sessions': ongoing,
+                'ongoing_delta': ongoing_delta
+            }
         else:
             print("Project '{project_name}' was not found in data file")
 
