@@ -145,6 +145,14 @@ def calculate_total(project_name, data):
     if not project_found:
         return None
 
+def get_project_index(project_name, data):
+    # Returns project index in data file or -1 if not found.
+    res = -1
+    for idx, p in enumerate(data["projects"]):
+        if p["project_name"] == project_name:
+            res = idx
+    return res
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("project", help="project name")
