@@ -1,19 +1,23 @@
 
 <p align="center">
-  <img height=180 src="readme_assets/logo.png">
+  <img height=180 src="./readme_assets/logo.png">
 </p>
 
 It's a Python script that allows you to track the time spent working in your projects or tasks.
 At the moment, this script doesn't have external dependencies so it's ready to run.
 
+#### Installation: 
+
+`$ pip install time-tracker-cli`
+
 #### How to use:
 
 **Help menu:**
 
-`$ python time_tracker_cli.py -h`
+`$ time-tracker-cli -h`
 
 ```
-usage: time_tracker_cli.py [-h] [-p PATH] [-r] project
+usage: time-tracker-cli [-h] [-p PATH] [-r] project
 
 positional arguments:
   project               project name
@@ -26,7 +30,7 @@ optional arguments:
 
 **Start/end working session**:
 
-`$ python time_tracker_cli.py "my_project" "~/Documents/my_project_time_tracker_data.json"`
+`$ time-tracker-cli "my_project" "~/Documents/my_project_time_tracker_data.json"`
 
 The file or project within the file will be created automatically if it doesn't exist.
 
@@ -57,7 +61,7 @@ Unfinished sessions will have a `null` value in the `end` field.
 To calculate the time spent working in a project, run:
 
 ```
-$ python time_tracker_cli.py "my_project" -r
+$ time-tracker-cli "my_project" -r
 
 Time spent working on project: 'test'
 1 day, 7:52:19
