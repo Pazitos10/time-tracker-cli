@@ -1,6 +1,9 @@
-# Time tracker
 
-It's a Python script that allows you to track the time spent working in a given project.
+<p align="center">
+  <img height=180 src="readme_assets/logo.png">
+</p>
+
+It's a Python script that allows you to track the time spent working in your projects or tasks.
 At the moment, this script doesn't have external dependencies so it's ready to run.
 
 #### How to use:
@@ -68,4 +71,8 @@ Time spent in ongoing session: 0:04:10.492647
 - [x] Add an argument to request a "report" of the time spent working in a project.
 - [ ] Define behavior for unfinished sessions.
 - [ ] Add more documentation.
-- [ ] Add a simple GUI (optional).
+- [x] Add a simple GUI (optional). 
+
+#### GUI version
+
+Check out [Time Tracker GUI](https://github.com/pazitos10/time_tracker_gui)
