@@ -10,10 +10,10 @@ At the moment, this script doesn't have external dependencies so it's ready to r
 
 **Help menu:**
 
-`$ python time_tracker.py -h`
+`$ python time-tracker-cli.py -h`
 
 ```
-usage: time_tracker.py [-h] [-p PATH] [-r] project
+usage: time-tracker-cli.py [-h] [-p PATH] [-r] project
 
 positional arguments:
   project               project name
@@ -26,7 +26,7 @@ optional arguments:
 
 **Start/end working session**:
 
-`$ python time_tracker.py "my_project" "~/Documents/my_project_time_tracker_data.json"`
+`$ python time-tracker-cli.py "my_project" "~/Documents/my_project_time_tracker_data.json"`
 
 The file or project within the file will be created automatically if it doesn't exist.
 
@@ -57,7 +57,7 @@ Unfinished sessions will have a `null` value in the `end` field.
 To calculate the time spent working in a project, run:
 
 ```
-$ python time_tracker.py "my_project" -r
+$ python time-tracker-cli.py "my_project" -r
 
 Time spent working on project: 'test'
 1 day, 7:52:19
@@ -75,4 +75,4 @@ Time spent in ongoing session: 0:04:10.492647
 
 #### GUI version
 
-Check out [Time Tracker GUI](https://github.com/pazitos10/time_tracker_gui)
+Check out [Time Tracker GUI](https://github.com/pazitos10/time-tracker)
