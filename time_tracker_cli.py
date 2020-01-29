@@ -42,35 +42,41 @@ def load_data(path):
         f.close()
         return data
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("project", help="project name")
-    parser.add_argument("-p", "--path", help="Path to the JSON data file", default="data.json")
-    parser.add_argument("-r", "--report", help="Calculate and display a report of the time spent in the project", action="store_true")
-    args = parser.parse_args()
-    project = args.project
-    path = args.path
-    report = args.report
-    if project and path:
-        if os.path.exists(path):
-            data = load_data(path)
-            if not data:
-                data = create_project(project)
+def has_ongoing_sessions(project_name, data):
+    # Returns True if is there an ongoing working session for a given project. 
+    # Otherwise, returns False.
+    ongoing = False
+    for p in data.get("projects"):
+        if p.get("project_name") == project_name:
+            for s in p.get("sessions"):
+                if s.get("end") is None:
+                    ongoing = True
+    return ongoing
 
-            if report:
-                get_report(data, project)
-            else:
-                p = get_project(project, data)
-                if p:
-                    p = add_timestamp(p)
-                    data = update_project(p, data)
-                else:
-                    data = create_project(project, data)    
-                
-                save_data(data, path)
-                print(f"working on \'{project}\'")
-                print(data)
-                return data
+def get_last_session_timedelta(project_name, data):
+    #Return timedelta and True if the last session is ongoing otherwise, False
+    p = get_project(project_name, data)
+    if p:
+        last_session = p.get("sessions")[-1]
+        start = format_date(last_session.get("start"))
+        if last_session.get("end") is not None:
+            end = format_date(last_session.get("end"))
+            return end - start, False
+        else:
+            end = datetime.now()
+            return end - start, True
+    else:
+        return '0:00:00', False
+
+def get_project_names(data):
+    return [p.get("project_name") for p in data.get("projects")]
+
+def get_total_timedelta(project_name, data):
+    total = calculate_total(project_name, data)
+    if total:
+        return total.get("completed_sessions")
+    else:
+        return '0:00:00'
 
 def add_timestamp(project):
     last_session = project.get("sessions")[-1]
@@ -87,8 +93,8 @@ def sum_deltas(deltas):
     initial = timedelta(days=0, hours=0, minutes=0, seconds=0)
     return reduce(lambda d1, d2: d1+d2, deltas, initial)
 
-def get_report(data, project_name):
-    total = calculate_total(data, project_name)
+def get_report(project_name, data):
+    total = calculate_total(project_name, data)
     if total:
         print(f"Time spent working on project: '{project_name}'")
         print(total.get('completed_sessions'))
@@ -97,7 +103,7 @@ def get_report(data, project_name):
     else:
         print(f"Project '{project_name}' was not found in data file")
 
-def calculate_total(data, project_name):
+def calculate_total(project_name, data):
     projects = data.get("projects")
     project_found = False
     for i, p in enumerate(projects):
@@ -124,6 +130,37 @@ def calculate_total(data, project_name):
             }
     if not project_found:
         return None
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("project", help="project name")
+    parser.add_argument("-p", "--path", help="Path to the JSON data file", default="data.json")
+    parser.add_argument("-r", "--report", help="Calculate and display a report of the time spent in the project", action="store_true")
+    args = parser.parse_args()
+    project = args.project
+    path = args.path
+    report = args.report
+    if project and path:
+        if os.path.exists(path):
+            data = load_data(path)
+            if not data:
+                data = create_project(project)
+
+            if report:
+                get_report(project, data)
+            else:
+                p = get_project(project, data)
+                if p:
+                    p = add_timestamp(p)
+                    data = update_project(p, data)
+                else:
+                    data = create_project(project, data)    
+                
+                save_data(data, path)
+                print(f"working on \'{project}\'")
+                print(data)
+                return data
+
 
 if __name__ == '__main__':
   main()
