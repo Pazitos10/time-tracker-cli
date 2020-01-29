@@ -5,17 +5,21 @@ from functools import reduce
 from datetime import datetime, timedelta
 
 def new_timestamp():
+    # Creates a new timestamp with a specific format.
     return datetime.now().strftime("%d/%m/%y - %H:%M:%S")
 
 def new_session():
+    # Creates a new working session dictionary.
     return {"start": new_timestamp(), "end": None}
 
 def get_project(project, data):
+    # Returns a specific project from the data dictionary.
     for p in data.get("projects"):
         if p.get("project_name") == project:
             return p
 
 def create_project(project_name, data=None):
+    # Creates a new project dictionary and adds it to the data dictionary.
     data = data or {"projects": []}
     data.get("projects").append({
             "project_name": project_name,
@@ -24,6 +28,7 @@ def create_project(project_name, data=None):
     return data
 
 def update_project(project, data):
+    # Replaces an existing project dicionary with a new one.
     for i, p in enumerate(data.get("projects")):
         if p.get("project_name") == project.get("project_name"):
             data.get("projects")[i] = project
@@ -31,11 +36,13 @@ def update_project(project, data):
     return data
 
 def save_data(data, path):
+    # Writes the data dictionary in a JSON file.
     with open(path, "w+") as f:
         json.dump(data, f)
 
 
 def load_data(path):
+    # Reads the data from a JSON file
     if os.path.exists(path):
         f = open(path, "r")
         data = json.loads(f.read())
@@ -43,7 +50,7 @@ def load_data(path):
         return data
 
 def has_ongoing_sessions(project_name, data):
-    # Returns True if is there an ongoing working session for a given project. 
+    # Returns True if the data structure has ongoing sessions for a given project. 
     # Otherwise, returns False.
     ongoing = False
     for p in data.get("projects"):
@@ -54,7 +61,7 @@ def has_ongoing_sessions(project_name, data):
     return ongoing
 
 def get_last_session_timedelta(project_name, data):
-    #Return timedelta and True if the last session is ongoing otherwise, False
+    # Returns timedelta and True if the last session is ongoing. Otherwise, returns False.
     p = get_project(project_name, data)
     if p:
         last_session = p.get("sessions")[-1]
@@ -69,9 +76,11 @@ def get_last_session_timedelta(project_name, data):
         return '0:00:00', False
 
 def get_project_names(data):
+    # Returns a list with the names of all the projects.
     return [p.get("project_name") for p in data.get("projects")]
 
 def get_total_timedelta(project_name, data):
+    # Returns the total time spent working in a project.
     total = calculate_total(project_name, data)
     if total:
         return total.get("completed_sessions")
@@ -79,6 +88,7 @@ def get_total_timedelta(project_name, data):
         return '0:00:00'
 
 def add_timestamp(project):
+    # Adds a new timestamp to a project (start/end). 
     last_session = project.get("sessions")[-1]
     if last_session.get("start") and last_session.get("end"):
         project.get("sessions").append(new_session())
@@ -87,13 +97,16 @@ def add_timestamp(project):
     return project
 
 def format_date(timestamp):
+    # Applies a specific format to a date object.
     return datetime.strptime(timestamp, "%d/%m/%y - %H:%M:%S")
 
 def sum_deltas(deltas):
+    # Sumarize the timedeltas in a list of deltas.
     initial = timedelta(days=0, hours=0, minutes=0, seconds=0)
     return reduce(lambda d1, d2: d1+d2, deltas, initial)
 
 def get_report(project_name, data):
+    # Prints a report for a specific project.
     total = calculate_total(project_name, data)
     if total:
         print(f"Time spent working on project: '{project_name}'")
@@ -104,6 +117,7 @@ def get_report(project_name, data):
         print(f"Project '{project_name}' was not found in data file")
 
 def calculate_total(project_name, data):
+    # Calculates the total time spent working in a project.
     projects = data.get("projects")
     project_found = False
     for i, p in enumerate(projects):
