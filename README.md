@@ -69,9 +69,9 @@ Time spent in ongoing session: 0:04:10.492647
 
 - [x] Add more functions to estimate the time spent working in a project (total, mean per day).
 - [x] Add an argument to request a "report" of the time spent working in a project.
-- [ ] Define behavior for unfinished sessions.
-- [ ] Add more documentation.
+- [x] Add more documentation.
 - [x] Add a simple GUI (optional). 
+- [ ] Define behavior for unfinished sessions.
 
 #### GUI version
 
