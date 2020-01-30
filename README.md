@@ -79,4 +79,4 @@ Time spent in ongoing session: 0:04:10.492647
 
 #### GUI version
 
-Check out [Time Tracker GUI](https://github.com/pazitos10/time-tracker)
+Check out [Time Tracker](https://github.com/pazitos10/time-tracker)
