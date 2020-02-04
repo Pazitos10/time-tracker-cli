@@ -30,7 +30,7 @@ optional arguments:
 
 **Start/end working session**:
 
-`$ time-tracker-cli "my_project" "~/Documents/my_project_time_tracker_data.json"`
+`$ time-tracker-cli -p "~/Documents/my_project_time_tracker_data.json" "my_project"`
 
 The file or project within the file will be created automatically if it doesn't exist.
 
@@ -61,9 +61,9 @@ Unfinished sessions will have a `null` value in the `end` field.
 To calculate the time spent working in a project, run:
 
 ```
-$ time-tracker-cli "my_project" -r
+$ time-tracker-cli -r -p "~/Documents/my_project_time_tracker_data.json" "my_project" 
 
-Time spent working on project: 'test'
+Time spent working on project: 'my_project'
 1 day, 7:52:19
 Ongoing sessions: True
 Time spent in ongoing session: 0:04:10.492647
