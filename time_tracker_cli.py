@@ -165,26 +165,27 @@ def main():
     project = args.project
     path = args.path
     report = args.report
-    if project and path:
-        if os.path.exists(path):
-            data = load_data(path)
-            if not data:
-                data = create_project(project)
+    create = False #create a flag check for first time
 
-            if report:
-                get_report(project, data)
-            else:
-                p = get_project(project, data)
-                if p:
-                    p = add_timestamp(p)
-                    data = update_project(p, data)
-                else:
-                    data = create_project(project, data)    
-                
-                save_data(data, path)
-                print(f"working on \'{project}\'")
-                print(data)
-                return data
+    if project and path:
+        data = load_data(path)
+        print(f"working on \'{project}\'")
+        if not data:
+            data = create_project(project)
+            create = True # first time create is true
+
+        if report:
+            get_report(project, data)
+        else:
+            p = get_project(project, data)
+            if not create: #if not first time, put the final time in the file
+                p = add_timestamp(p)
+                data = update_project(p, data)
+                print(f"set time on \'{project}\'") # message of set time.
+            
+        save_data(data, path)
+        print(data)
+        return data
 
 
 if __name__ == '__main__':
