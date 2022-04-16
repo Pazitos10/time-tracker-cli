@@ -38,19 +38,55 @@ def update_project(project, data):
             break
     return data
 
+def is_dir(path):
+    # Returns True if path has no extension
+    return len(os.path.basename(path).split('.')) == 1 
+
+def is_valid_path(path):
+    # Returns True if `path` is a directory or if has .json extension.
+    return is_dir(path) or os.path.basename(path).endswith('.json')
+
+def append_filename_to_path(path, default_name="data.json"):
+    if is_dir(path):
+        path = path if not path.endswith('/') else path[:-1]
+        return f"{path}/{default_name}"
+    return path
+
+def create_data_file(path):
+    path = append_filename_to_path(path)
+    dirname = os.path.dirname(path)
+    if dirname and not os.path.exists(dirname):
+        os.makedirs(dirname)
+    if not os.path.exists(path):
+        try:
+            f = open(path, "a")
+            empty_content = '''
+            {
+                "projects": []
+            }
+            '''
+            f.write(empty_content.strip())
+            f.close()
+        except OSError:
+            print(f"Failed creating {path}")
+        else:
+            print(f"{path} created!")
+            return path
+    else:
+        print(f"{path} found!")
+        return path
+
 def save_data(data, path):
     # Writes the data dictionary in a JSON file.
     with open(path, "w+") as f:
         json.dump(data, f)
 
-
 def load_data(path):
     # Reads the data from a JSON file
-    if os.path.exists(path):
-        f = open(path, "r")
-        data = json.loads(f.read())
-        f.close()
-        return data
+    f = open(path, "r")
+    data = json.loads(f.read())
+    f.close()
+    return data
 
 def has_ongoing_sessions(project_name, data):
     # Returns True if the data structure has ongoing sessions for a given project. 
@@ -165,26 +201,27 @@ def main():
     project = args.project
     path = args.path
     report = args.report
-    if project and path:
-        if os.path.exists(path):
-            data = load_data(path)
-            if not data:
-                data = create_project(project)
+    if project and is_valid_path(path):
+        path = create_data_file(path)
+        data = load_data(path)
+        if not data:
+            data = create_project(project)
 
-            if report:
-                get_report(project, data)
+        if report:
+            get_report(project, data)
+        else:
+            p = get_project(project, data)
+            if p:
+                p = add_timestamp(p)
+                data = update_project(p, data)
             else:
-                p = get_project(project, data)
-                if p:
-                    p = add_timestamp(p)
-                    data = update_project(p, data)
-                else:
-                    data = create_project(project, data)    
-                
-                save_data(data, path)
-                print(f"working on \'{project}\'")
-                print(data)
-                return data
+                data = create_project(project, data)    
+            
+            save_data(data, path)
+            print(f"working on \'{project}\'")
+            print(data)
+            return data
+    print(f"Project or path not valid")
 
 
 if __name__ == '__main__':
