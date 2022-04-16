@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "time-tracker-cli"
-version = "1.0.0"
+version = "1.0.1"
 description = "time-tracker-cli is a Python script that allows you to track the time spent working in your projects or tasks."
 license = "MIT"
 authors = [

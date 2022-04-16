@@ -220,8 +220,8 @@ def main():
             save_data(data, path)
             print(f"working on \'{project}\'")
             print(data)
-            return data
-    print(f"Project or path not valid")
+    else:
+        print(f"Project or path not valid")
 
 
 if __name__ == '__main__':
